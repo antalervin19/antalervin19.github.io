@@ -1,1 +1,859 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="theme-color" content="#000000"/><meta name="description" content="antalervin19 - Portfolio"/><title>Antal Ervin - Portfolio</title><link rel="icon" href="/favicon.ico"/><script src="https://cdn.tailwindcss.com"></script><script defer="defer" src="/static/js/main.e9b744f3.js"></script></head><body><noscript>JavaScript is needed to view this site!</noscript><div id="root"></div></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antal Ervin - Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --grid-size: 48px;
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --text-muted: #52525b;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(255, 255, 255, 0.3);
+            --bg-card: rgba(20, 20, 20, 0.6);
+            --bg-hover: rgba(30, 30, 30, 0.8);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            margin: 0;
+            background-color: #000000;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* --- Fixed Background Structure --- */
+        .bg-fixed-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -5;
+            pointer-events: none;
+            overflow: hidden;
+            background-color: #000000;
+            
+            /* Background Grid */
+            background-image:
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(0deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: var(--grid-size) var(--grid-size);
+            background-position: center center;
+        }
+
+        /* --- Moving White Blobs --- */
+        .ambient-blob {
+            position: absolute;
+            background: #ffffff;
+            border-radius: 50%;
+            opacity: 0.18; 
+            mix-blend-mode: screen;
+            /* Direct initial blur to soften the boundaries before the overlay hits them */
+            filter: blur(120px);
+            -webkit-filter: blur(120px);
+            will-change: transform;
+        }
+
+        .blob-1 {
+            width: 500px;
+            height: 500px;
+            top: -10%;
+            left: 10%;
+            animation: driftBlobOne 22s infinite alternate ease-in-out;
+        }
+
+        .blob-2 {
+            width: 600px;
+            height: 600px;
+            bottom: -10%;
+            right: -5%;
+            animation: driftBlobTwo 28s infinite alternate ease-in-out;
+        }
+
+        .blob-3 {
+            width: 400px;
+            height: 400px;
+            top: 35%;
+            right: 25%;
+            opacity: 0.12;
+            animation: driftBlobThree 18s infinite alternate ease-in-out;
+        }
+
+        @keyframes driftBlobOne {
+            0% { transform: translate(0px, 0px) scale(1); }
+            50% { transform: translate(160px, 120px) scale(1.15); }
+            100% { transform: translate(-40px, 220px) scale(0.9); }
+        }
+
+        @keyframes driftBlobTwo {
+            0% { transform: translate(0px, 0px) scale(1.05); }
+            50% { transform: translate(-200px, -140px) scale(0.9); }
+            100% { transform: translate(60px, 80px) scale(1.1); }
+        }
+
+        @keyframes driftBlobThree {
+            0% { transform: translate(0px, 0px) scale(0.95); }
+            50% { transform: translate(-120px, 160px) scale(1.2); }
+            100% { transform: translate(140px, -60px) scale(1); }
+        }
+
+        /* --- Blur & Noise Layer (Above the Blobs) --- */
+        .bg-fixed-layer::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* Extra glass blur layer to blend the animated blobs seamlessly */
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            /* SVG fractal grain texture overlay */
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.025;
+            pointer-events: none;
+        }
+
+        header {
+            position: fixed;
+            top: 1.25rem;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            padding: 0 2rem;
+            width: 100%;
+        }
+
+        .navbar-pill {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(10, 10, 10, 0.7);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid var(--border-color);
+            border-radius: 9999px;
+            padding: 0.75rem 1.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+        }
+
+        .brand-zone {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .logo {
+            font-family: monospace;
+            font-size: 1rem;
+            font-weight: 500;
+            letter-spacing: -0.2px;
+            color: var(--text-secondary);
+            transition: color 0.2s ease;
+        }
+
+        .brand-zone:hover .logo {
+            color: var(--text-primary);
+        }
+
+        nav {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            position: relative;
+            padding-bottom: 4px;
+            transition: color 0.2s ease;
+        }
+
+        nav a:hover {
+            color: var(--text-primary);
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--text-primary);
+            transition: width 0.25s ease;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        .hero-screen {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            align-items: center;
+            gap: 4rem;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            min-height: 100vh;
+            padding: 7rem 4rem 4rem 4rem;
+            perspective: 1200px;
+        }
+
+        .hero-text {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            transform-style: preserve-3d;
+            transform: translateZ(30px);
+        }
+
+        .availability {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+
+        .availability::before {
+            content: '✦';
+            color: var(--text-primary);
+        }
+
+        .hero-text h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(3.2rem, 5.5vw, 5.2rem);
+            line-height: 0.9;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: -2px;
+            transform: translateZ(40px);
+        }
+
+        .hero-text h1 span {
+            color: var(--text-muted);
+            display: block;
+        }
+
+        .title-sub {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-top: -0.5rem;
+        }
+
+        .description {
+            color: var(--text-secondary);
+            max-width: 540px;
+            line-height: 1.6;
+            font-size: 1rem;
+            transform: translateZ(20px);
+        }
+
+        .cards-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+            margin-top: 0.5rem;
+            max-width: 580px;
+            transform-style: preserve-3d;
+        }
+
+        .info-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+            transform: translateZ(10px);
+        }
+
+        .info-card:hover {
+            border-color: var(--border-hover);
+            background: var(--bg-hover);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7);
+            transform: translateZ(45px) rotateX(4deg) rotateY(-2deg);
+        }
+
+        .info-card h2, .info-card h3 {
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .info-card p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .hero-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            height: 500px;
+            transform-style: preserve-3d;
+        }
+
+        .lanyard-svg-container {
+            position: absolute;
+            top: -50px;
+            width: 200px;
+            height: 280px;
+            z-index: 1;
+            pointer-events: none;
+            transform: translateZ(15px);
+        }
+
+        .id-card {
+            background: #0a0a0a;
+            border: 1px solid #222222;
+            border-radius: 16px;
+            padding: 16px;
+            width: 320px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+            transform: translateY(80px) rotate(3deg) translateZ(40px);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.2), box-shadow 0.5s ease;
+            z-index: 2;
+        }
+
+        .id-card:hover {
+            transform: translateY(75px) rotate(0deg) scale(1.03) translateZ(70px);
+            box-shadow: 0 45px 80px rgba(0,0,0,0.9);
+            border-color: #444444;
+        }
+
+        .photo-slot {
+            width: 100%;
+            aspect-ratio: 3/4;
+            background: #111111;
+            border: 1px solid #222222;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .photo-slot img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%);
+        }
+
+        .portfolio-section {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 6rem 4rem;
+            perspective: 1200px;
+        }
+
+        .section-header {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+            line-height: 1.1;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            margin-bottom: 3.5rem;
+            position: relative;
+        }
+
+        .section-header span {
+            color: var(--text-muted);
+            display: block;
+        }
+
+        .about-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            transform-style: preserve-3d;
+        }
+
+        .about-grid-left {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            transform-style: preserve-3d;
+        }
+
+        .profile-3d-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 2rem;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+            transform: translateZ(10px);
+            transform-style: preserve-3d;
+        }
+
+        .profile-3d-card:hover {
+            border-color: var(--border-hover);
+            background: var(--bg-hover);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7);
+            transform: translateZ(40px) rotateX(3deg) rotateY(-1deg);
+        }
+
+        .profile-3d-card h3 {
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+            transform: translateZ(15px);
+        }
+
+        .profile-3d-card p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            transform: translateZ(10px);
+        }
+
+        .skills-wrapper-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 2rem;
+            border-radius: 14px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transform: translateZ(10px);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+        
+        .skills-wrapper-card:hover {
+            border-color: var(--border-hover);
+            transform: translateZ(25px);
+        }
+
+        .skills-wrapper-card h4 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .skills-flex-matrix {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+        }
+
+        .pill-tag-tech {
+            font-family: monospace;
+            font-size: 0.8rem;
+            padding: 0.4rem 0.9rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: var(--text-secondary);
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .pill-tag-tech:hover {
+            color: var(--text-primary);
+            border-color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .projects-matrix-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            transform-style: preserve-3d;
+        }
+
+        .project-meta-flex {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            gap: 2rem;
+        }
+
+        .project-row-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .project-link-icon {
+            color: var(--text-muted);
+            transition: color 0.2s ease, transform 0.2s ease;
+            margin-top: -0.25rem;
+        }
+
+        .profile-3d-card:hover .project-link-icon {
+            color: var(--text-primary);
+            transform: translate(2px, -2px);
+        }
+
+        .tech-inline-row {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .tech-mini-label {
+            font-size: 0.7rem;
+            font-family: monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 0.2rem 0.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .profile-3d-card:hover .tech-mini-label {
+            border-color: rgba(255, 255, 255, 0.3);
+            color: var(--text-primary);
+        }
+
+        .contact-split-layout {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 4rem;
+            align-items: center;
+            transform-style: preserve-3d;
+        }
+
+        .contact-action-zone {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-action-3d {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            width: 100%;
+            max-width: 340px;
+            padding: 1.25rem;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-decoration: none;
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+            transform: translateZ(20px);
+        }
+
+        .btn-action-3d:hover {
+            border-color: var(--text-primary);
+            background: var(--bg-hover);
+            box-shadow: 0 25px 50px rgba(255, 255, 255, 0.1);
+            transform: translateZ(50px) rotateX(6deg);
+        }
+
+        .btn-action-3d svg {
+            transition: transform 0.2s ease;
+        }
+
+        .btn-action-3d:hover svg {
+            transform: scale(1.1);
+        }
+
+        footer {
+            max-width: 1400px;
+            margin: 6rem auto 0 auto;
+            padding: 2.5rem 4rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            font-family: monospace;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 968px) {
+            header { padding: 0 1rem; top: 1rem; }
+            .navbar-pill { padding: 0.6rem 1.2rem; }
+            
+            .hero-screen, .about-layout, .projects-matrix-layout, .contact-split-layout {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+                padding: 6rem 2rem 3rem 2rem;
+                text-align: center;
+                perspective: none;
+            }
+            .hero-screen { padding-top: 8.5rem; }
+            
+            .hero-text { align-items: center; transform: none; }
+            .hero-text h1, .description, .cards-layout { transform: none; }
+            .cards-layout { grid-template-columns: 1fr; width: 100%; }
+            
+            .portfolio-section { padding: 4rem 2rem; }
+            .section-header { text-align: center; }
+            
+            .info-card, .profile-3d-card, .skills-wrapper-card, .btn-action-3d { 
+                transform: none !important; 
+            }
+            
+            .lanyard-svg-container { display: none; }
+            .id-card { transform: none !important; margin: 0 auto; }
+            
+            .project-row-top { text-align: left; }
+            .tech-inline-row { justify-content: center; }
+            .skills-flex-matrix { justify-content: center; }
+            
+            footer {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: center;
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-fixed-layer">
+        <div class="ambient-blob blob-1"></div>
+        <div class="ambient-blob blob-2"></div>
+        <div class="ambient-blob blob-3"></div>
+    </div>
+
+    <header>
+        <div class="navbar-pill">
+            <a href="#" class="brand-zone">
+                <span class="logo">antalervin19.hu</span>
+            </a>
+            <nav>
+                <a href="#">Home</a>
+                <a href="#about">About</a>
+                <a href="#projects">Projects</a>
+                <a href="#contact">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="hero-screen">
+        <section class="hero-text">
+            <div class="availability">Open to collaborations</div>
+            <h1>
+                Antal<br>
+                <span>Ervin</span>
+            </h1>
+            <p class="title-sub">Game Developer _</p>
+            
+            <p class="description">
+                Coding from small to large in various fields, be Mods, Games, Tools, and more. Open to other fields such as Hardware development.
+            </p>
+
+            <div class="cards-layout">
+                <div class="info-card">
+                    <h2>Unity Development</h2>
+                    <p>Writing highly performant C# architectures, handling game systems networking, multiplayer implementation, and mod tooling environments.</p>
+                </div>
+                <div class="info-card">
+                    <h2>Custom C++ Engine</h2>
+                    <p>Diving deep into low-level systems architecture, custom graphics pipelines, performance memory management, and clean object-oriented engine code blueprints.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="hero-visual">
+            <svg class="lanyard-svg-container" viewBox="0 0 200 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M70,0 Q35,140 94,225" stroke="#111111" stroke-width="14" stroke-linecap="round" />
+                <path d="M130,0 Q165,140 106,225" stroke="#1a1a1a" stroke-width="14" stroke-linecap="round" />
+                
+                <path d="M70,0 Q35,140 94,225" stroke="#333333" stroke-width="2" stroke-dasharray="4,4" />
+                <path d="M130,0 Q165,140 106,225" stroke="#444444" stroke-width="2" stroke-dasharray="4,4" />
+                
+                <circle cx="100" cy="228" r="8" fill="#222222" stroke="#444444" stroke-width="2" />
+                <rect x="96" y="234" width="8" height="16" rx="2" fill="#111111" stroke="#222222" stroke-width="1" />
+            </svg>
+
+            <div class="id-card">
+                <div class="photo-slot">
+                    <img src="profile.png" alt="Antal Ervin Profile Portrait">
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <section id="about" class="portfolio-section">
+        <h2 class="section-header">About<br><span>Me_</span></h2>
+        
+        <div class="about-layout">
+            <div class="about-grid-left">
+                <div class="profile-3d-card">
+                    <h3>Development Principles</h3>
+                    <p>Loves to find open gates to improve code quality and efficiency. Experienced with multiple programming languages and toolkits built around raw performance.</p>
+                </div>
+                <div class="profile-3d-card">
+                    <h3>Problem Solving Philosophy</h3>
+                    <p>Building solutions for problems large and small. From Mods, Sites, Games, to Tools. A developer dedicated to tracking down intuitive, highly optimized pathways across complex creative workflows.</p>
+                </div>
+            </div>
+            
+            <div class="skills-wrapper-card">
+                <h4>Core Stack & Environments Matrix</h4>
+                <div class="skills-flex-matrix">
+                    <span class="pill-tag-tech">Python</span>
+                    <span class="pill-tag-tech">C#</span>
+                    <span class="pill-tag-tech">C++</span>
+                    <span class="pill-tag-tech">Unity 6</span>
+                    <span class="pill-tag-tech">CLI Tools</span>
+                    <span class="pill-tag-tech">Networking</span>
+                    <span class="pill-tag-tech">Automation</span>
+                    <span class="pill-tag-tech">Git Architecture</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects" class="portfolio-section">
+        <h2 class="section-header">Featured<br><span>Production_</span></h2>
+        
+        <div class="projects-matrix-layout">
+            
+            <div class="profile-3d-card">
+                <div class="project-meta-flex">
+                    <div class="project-row-top">
+                        <div>
+                            <h3>UrbexCAM</h3>
+                            <p>First Person Exploration game developed by Infinity Glyph Games. Using Unity 6000 to create immersive environments.</p>
+                        </div>
+                        <a href="https://iggames.eu/" target="_blank" rel="noopener noreferrer" class="project-link-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                        </a>
+                    </div>
+                    <div class="tech-inline-row">
+                        <span class="tech-mini-label">C#</span>
+                        <span class="tech-mini-label">Unity 6</span>
+                        <span class="tech-mini-label">Multiplayer</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-3d-card">
+                <div class="project-meta-flex">
+                    <div class="project-row-top">
+                        <div>
+                            <h3>MonMulti</h3>
+                            <p>Work-in-progress framework mod adding functional multiplayer gameplay into the Indie game Mon Bazou.</p>
+                        </div>
+                        <a href="https://github.com/antalervin19/MonMulti" target="_blank" rel="noopener noreferrer" class="project-link-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                        </a>
+                    </div>
+                    <div class="tech-inline-row">
+                        <span class="tech-mini-label">C#</span>
+                        <span class="tech-mini-label">Unity</span>
+                        <span class="tech-mini-label">Modding</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-3d-card">
+                <div class="project-meta-flex">
+                    <div class="project-row-top">
+                        <div>
+                            <h3>ScrapMechanicModLauncher</h3>
+                            <p>A Mod Installer/Manager for the game Scrap Mechanic. Allows players to easily install and manage their FileMods</p>
+                        </div>
+                        <a href="https://github.com/antalervin19/ScrapMechanicModLauncher" target="_blank" rel="noopener noreferrer" class="project-link-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                        </a>
+                    </div>
+                    <div class="tech-inline-row">
+                        <span class="tech-mini-label">C#</span>
+                        <span class="tech-mini-label">Tooling</span>
+                        <span class="tech-mini-label">Desktop Application</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-3d-card">
+                <div class="project-meta-flex">
+                    <div class="project-row-top">
+                        <div>
+                            <h3>SWModGenerator</h3>
+                            <p>A standalone terminal CLI application to instantly construct organized directory paths and compile standard metadata configurations for Stormworks.</p>
+                        </div>
+                        <a href="https://github.com/antalervin19/SWModGenerator" target="_blank" rel="noopener noreferrer" class="project-link-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                        </a>
+                    </div>
+                    <div class="tech-inline-row">
+                        <span class="tech-mini-label">Python</span>
+                        <span class="tech-mini-label">CLI Development</span>
+                        <span class="tech-mini-label">Automation</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="contact" class="portfolio-section">
+        <div class="contact-split-layout">
+            <div>
+                <h2 class="section-header">Let's<br><span>Connect_</span></h2>
+                <p class="description">Interested in my work, collaborating on dynamic game architectures, or looking to deploy low-level integrations? Let's trace down a solution.</p>
+            </div>
+            <div class="contact-action-zone">
+                <a href="https://github.com/antalervin19" target="_blank" rel="noopener noreferrer" class="btn-action-3d">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path><path d="M9 18c-4.51 2-5-2-7-2"></path></svg>
+                    GitHub
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2026 Antal Ervin</p>
+        <p>antalervin19.hu</p>
+    </footer>
+
+</body>
+</html>
