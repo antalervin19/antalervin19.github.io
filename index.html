@@ -40,7 +40,6 @@
             position: relative;
         }
 
-        /* --- Fixed Background Structure --- */
         .bg-fixed-layer {
             position: fixed;
             top: 0;
@@ -60,14 +59,12 @@
             background-position: center center;
         }
 
-        /* --- Moving White Blobs --- */
         .ambient-blob {
             position: absolute;
             background: #ffffff;
             border-radius: 50%;
             opacity: 0.18; 
             mix-blend-mode: screen;
-            /* Direct initial blur to soften the boundaries before the overlay hits them */
             filter: blur(120px);
             -webkit-filter: blur(120px);
             will-change: transform;
@@ -116,7 +113,6 @@
             100% { transform: translate(140px, -60px) scale(1); }
         }
 
-        /* --- Blur & Noise Layer (Above the Blobs) --- */
         .bg-fixed-layer::after {
             content: '';
             position: absolute;
@@ -124,10 +120,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            /* Extra glass blur layer to blend the animated blobs seamlessly */
             backdrop-filter: blur(40px);
             -webkit-backdrop-filter: blur(40px);
-            /* SVG fractal grain texture overlay */
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
             opacity: 0.025;
             pointer-events: none;
